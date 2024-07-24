@@ -69,7 +69,7 @@ export const useFirebaseAuth = () => {
 
   const clear = () => {
     setAuthUser(null);
-    setLoading(true);
+    setLoading(false);
   };
 
   const signOut = () =>  auth.signOut().then(clear);
@@ -80,6 +80,7 @@ export const useFirebaseAuth = () => {
   };
 
   const handleAuthStateChanged = (user: User | null) => {
+    setLoading(true);
     if (user) {
       setAuthUser(user);
     } else {
@@ -103,7 +104,7 @@ export const useFirebaseAuth = () => {
 
 const authUserContext = createContext({
   authUser: null as User | null,
-  loading: true,
+  loading: false,
   signOut: () => { },
   signInWithGoogle: () => { }
 });

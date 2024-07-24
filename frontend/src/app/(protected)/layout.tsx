@@ -50,7 +50,7 @@ export default function NeedLoginLayout({ children, login }:
 
   return (
     <>
-      {authUser ? (
+      { authUser && (
         <>
           {/* <toolbarContext.Provider value={{ setToolBar }}>
             <Header user={authUser} signOut={signOut} tools={toolbar} /> */}
@@ -58,9 +58,10 @@ export default function NeedLoginLayout({ children, login }:
             {children}
           {/* </toolbarContext.Provider> */}
         </>
-      ) : (
-        login
-      )}
+      ) 
+      || loading && <div>Loading...</div> 
+      || login 
+        }
     </>
   );
 }

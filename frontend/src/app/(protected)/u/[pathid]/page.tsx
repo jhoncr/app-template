@@ -4,6 +4,8 @@ import { Search, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToolbar } from "@/app/(protected)/u/nav_tools";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AddContributers } from "@/components/ui/add-collaborators";
+
 import Link from "next/link";
 
 export default function ItemPage({ params }: { params: { pathid: string } }) {
@@ -31,7 +33,8 @@ export default function ItemPage({ params }: { params: { pathid: string } }) {
                 href="#"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
-                <UserPlus className="h-5 w-5" />
+                {/* <UserPlus className="h-5 w-5" /> */}
+                <AddContributers item_id={params.pathid} access={dummyDoc.access} pending_access={dummyDoc.pending_access} />
                 <span className="sr-only">Collaborate</span>
               </Link>
             </TooltipTrigger>
@@ -44,3 +47,20 @@ export default function ItemPage({ params }: { params: { pathid: string } }) {
 
   return <div>My Post: {params.pathid}</div>;
 }
+
+
+const dummyDoc = {
+  id: "123",
+  title: "A dummy document",
+  item_type: "document",
+  access: {
+    "123": {
+      uid: "123",
+      email: "dummy@123",
+      displayName: "Dummy User",
+      role: "admin",
+
+    }
+  },
+  pending_access: {},
+};
