@@ -5,11 +5,16 @@ import { Input } from "@/components/ui/input";
 import { useToolbar } from "@/app/(protected)/u/nav_tools";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AddContributers } from "@/components/ui/add-collaborators";
+import { useSearchParams } from 'next/navigation'
+
 
 import Link from "next/link";
 
-export default function ItemPage({ params }: { params: { pathid: string } }) {
+export default function ItemPage() {
   const { setTools } = useToolbar();
+  const params = useSearchParams();
+
+  let item_id = params.get("id");
 
   useEffect(() => {
     setTools(<SearchTool />);
@@ -34,7 +39,7 @@ export default function ItemPage({ params }: { params: { pathid: string } }) {
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 {/* <UserPlus className="h-5 w-5" /> */}
-                <AddContributers item_id={params.pathid} access={dummyDoc.access} pending_access={dummyDoc.pending_access} />
+                <AddContributers item_id={item_id} access={dummyDoc.access} pending_access={dummyDoc.pending_access} />
                 <span className="sr-only">Collaborate</span>
               </Link>
             </TooltipTrigger>
@@ -45,8 +50,18 @@ export default function ItemPage({ params }: { params: { pathid: string } }) {
     );
   };
 
-  return <div>My Post: {params.pathid}</div>;
+  return item_id && <div>My Post: {item_id}</div> || <ItemNotFound />;
 }
+
+
+function ItemNotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center h-full space-y-4">
+      <h1 className="text-2xl font-semibold">Item not found</h1>
+      <p className="text-muted-foreground">The item you are looking for does not exist.</p>
+    </div>
+  );
+  }
 
 
 const dummyDoc = {

@@ -135,7 +135,7 @@ export function AddContributers({ item_id, access, pending_access }:
     <Dialog open={isOpen} onOpenChange={onOpenHandler}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon">
-          <UserPlus2 className="h-5 w-5" />
+          <UserPlus2 className="h-7 w-7 m-2" />
         </Button> 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]" onCloseAutoFocus={onClose}>

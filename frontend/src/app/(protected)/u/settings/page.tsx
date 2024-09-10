@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { ModeToggle } from "@/components/ui/theme-switcher"
 
 export default function UserSettings() {
   return (
@@ -20,6 +21,7 @@ export default function UserSettings() {
         <CardDescription>Manage your settings here.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
+        <ModeToggle />
         <div className="flex items-center justify-between space-x-4">
           <Label htmlFor="necessary" className="flex flex-col space-y-1">
             <span>Strictly Necessary</span>
