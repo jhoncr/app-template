@@ -7,11 +7,11 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as z from "zod";
-import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {initializeApp, getApps} from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
 
 if (getApps().length === 0) {
   initializeApp();
@@ -34,7 +34,7 @@ const schema = z
 // allow cors for all origins
 export const createNewJournal = onCall(
   {
-    cors: ["https://nessedia.web.app"],
+    cors: ["https://example.web.app"],
     enforceAppCheck: true,
   },
   async (request) => {

@@ -1,0 +1,4 @@
+notes.sh
+
+# ignore all .env.mjs files
+*.env.mjs

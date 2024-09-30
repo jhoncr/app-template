@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["es2017"],
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -11,6 +12,8 @@
   "compileOnSave": true,
   "include": [
     "src"
-, "../../simplelog/src/tests"  ]
+, "../../simplelog/src/tests"  ],
+"exclude": ["node_modules", "__tests__"]
+
 
 }

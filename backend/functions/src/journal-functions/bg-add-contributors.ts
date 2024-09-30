@@ -7,11 +7,11 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as z from "zod";
-import {getFirestore} from "firebase-admin/firestore";
-import {initializeApp, getApps} from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
 
 if (getApps().length === 0) {
   initializeApp();
@@ -22,16 +22,20 @@ const db = getFirestore();
 const ROLES = ["viewer", "reporter", "editor", "to_remove", "admin"] as const; // , "admin"];
 const SHARE_ROLES = new Set(["admin"]);
 
-const logFormSchema = z.object({
-  people: z.array(
-    z.object({
-      email: z.string().email(),
-      role: z.enum(ROLES),
-      is_pending: z.boolean().optional(),
-    })
-  ).max(10, "You can only share with up to 10 people"),
-  logID: z.string(),
-}).strict();
+const logFormSchema = z
+  .object({
+    people: z
+      .array(
+        z.object({
+          email: z.string().email(),
+          role: z.enum(ROLES),
+          is_pending: z.boolean().optional(),
+        })
+      )
+      .max(10, "You can only share with up to 10 people"),
+    logID: z.string(),
+  })
+  .strict();
 
 type Person = z.infer<typeof logFormSchema>["people"][0];
 
@@ -46,7 +50,7 @@ type Contributer = {
 // allow cors for all origins
 export const addContributer = onCall(
   {
-    cors: ["https://nessedia.web.app"],
+    cors: ["https://example.web.app"],
     enforceAppCheck: true,
   },
   async (request) => {
@@ -92,12 +96,8 @@ export const addContributer = onCall(
         // TODO: check the logData has a valid document agains the schema
 
         const pendingAccess = logData?.pending_access ?? {};
-        const hasAccess: { [uid: string]: Contributer } =
-          logData?.access ?? {};
-        if (
-          !(uid in hasAccess) ||
-          !SHARE_ROLES.has(hasAccess[uid].role)
-        ) {
+        const hasAccess: { [uid: string]: Contributer } = logData?.access ?? {};
+        if (!(uid in hasAccess) || !SHARE_ROLES.has(hasAccess[uid].role)) {
           throw new HttpsError(
             "permission-denied",
             "You do not have permission to share this log."
@@ -131,7 +131,7 @@ export const addContributer = onCall(
             if (person.role === "to_remove") {
               peopleToRemove.push(uid); // TODO: change this to a map
             } else {
-              peopleToKeep[uid] = {...hasAccess[uid], role: person.role};
+              peopleToKeep[uid] = { ...hasAccess[uid], role: person.role };
             }
           } else {
             peopleToAdd[person.email] = person.role;
@@ -152,11 +152,11 @@ export const addContributer = onCall(
         const toEmail = Object.keys(peopleToAdd).filter(
           (email) => !(email in pendingAccess)
         );
-        console.debug({toEmail});
+        console.debug({ toEmail });
         if (toEmail.length > 0) {
           // add doc to /mail collection
           const getBody = (email: string) => {
-            const URL = `https://nessedia.web.app/share?journal=${logId}&email=${email}`;
+            const URL = `https://example.web.app/share?journal=${logId}&email=${email}`;
             return {
               subject: `You have been invited to contribute to ${logData?.title}`,
               html: `You have been invited to contribute to ${logData?.title}. 
@@ -176,7 +176,7 @@ export const addContributer = onCall(
           access: {
             ...peopleToKeep,
           },
-          pending_access: {...peopleToAdd},
+          pending_access: { ...peopleToAdd },
         });
       });
     } catch (error) {
@@ -192,6 +192,6 @@ export const addContributer = onCall(
     }
 
     // return ok
-    return {result: "ok", message: "Added log entry"};
+    return { result: "ok", message: "Added log entry" };
   }
 );

@@ -4,12 +4,106 @@ import { getAuth } from "firebase-admin/auth";
 
 process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
 process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
-process.env.GCLOUD_PROJECT="nessedia-3d219"
+process.env.GCLOUD_PROJECT = "example";
 
-const randomNames = [ "John", "Mary", "Peter", "Paul", "George", "Ringo", "Luke", "Leia", "Han", "Chewbacca", "Obi-Wan", "Darth Vader", "Yoda", "Anakin", "Padme", "Qui-Gon", "Mace Windu", "Jabba", "Boba Fett", "Jar Jar Binks", "Lando", "Kylo Ren", "Rey", "Finn", "Poe", "BB-8", "R2-D2", "C-3PO", "Darth Maul", "Palpatine", "Jango Fett", "Count Dooku", "General Grievous", "Ahsoka Tano", "Captain Rex", "Cad Bane", "Asajj Ventress", "Mandalorian", "Baby Yoda", "Grogu", "Din Djarin", "Cara Dune", "Greef Karga", "Bo-Katan Kryze", "Ahsoka Tano", "Boba Fett", "Luke Skywalker", "Han Solo", "Chewbacca", "Leia Organa", "R2-D2", "C-3PO", "Obi-Wan Kenobi", "Yoda", "Darth Vader", "Darth Maul", "Palpatine", "Jabba the Hutt", "Boba Fett", "Kylo Ren", "Rey", "Finn", "Poe Dameron", "BB-8", "Mace Windu", "Qui-Gon Jinn", "Lando Calrissian", "Jango Fett", "Count Dooku", "General Grievous", "Ahsoka Tano", "Captain Rex", "Cad Bane", "Asajj Ventress", "Mandalorian", "Baby Yoda", "Grogu", "Din Djarin", "Cara Dune", "Greef Karga", "Bo-Katan Kryze", "Ahsoka Tano", "Boba Fett", "Luke Skywalker", "Han Solo", "Chewbacca", "Leia Organa", "R2-D2", "C-3PO", "Obi-Wan Kenobi", "Yoda", "Darth Vader", "Darth Maul"]
-const L = randomNames.length
+const randomNames = [
+  "John",
+  "Mary",
+  "Peter",
+  "Paul",
+  "George",
+  "Ringo",
+  "Luke",
+  "Leia",
+  "Han",
+  "Chewbacca",
+  "Obi-Wan",
+  "Darth Vader",
+  "Yoda",
+  "Anakin",
+  "Padme",
+  "Qui-Gon",
+  "Mace Windu",
+  "Jabba",
+  "Boba Fett",
+  "Jar Jar Binks",
+  "Lando",
+  "Kylo Ren",
+  "Rey",
+  "Finn",
+  "Poe",
+  "BB-8",
+  "R2-D2",
+  "C-3PO",
+  "Darth Maul",
+  "Palpatine",
+  "Jango Fett",
+  "Count Dooku",
+  "General Grievous",
+  "Ahsoka Tano",
+  "Captain Rex",
+  "Cad Bane",
+  "Asajj Ventress",
+  "Mandalorian",
+  "Baby Yoda",
+  "Grogu",
+  "Din Djarin",
+  "Cara Dune",
+  "Greef Karga",
+  "Bo-Katan Kryze",
+  "Ahsoka Tano",
+  "Boba Fett",
+  "Luke Skywalker",
+  "Han Solo",
+  "Chewbacca",
+  "Leia Organa",
+  "R2-D2",
+  "C-3PO",
+  "Obi-Wan Kenobi",
+  "Yoda",
+  "Darth Vader",
+  "Darth Maul",
+  "Palpatine",
+  "Jabba the Hutt",
+  "Boba Fett",
+  "Kylo Ren",
+  "Rey",
+  "Finn",
+  "Poe Dameron",
+  "BB-8",
+  "Mace Windu",
+  "Qui-Gon Jinn",
+  "Lando Calrissian",
+  "Jango Fett",
+  "Count Dooku",
+  "General Grievous",
+  "Ahsoka Tano",
+  "Captain Rex",
+  "Cad Bane",
+  "Asajj Ventress",
+  "Mandalorian",
+  "Baby Yoda",
+  "Grogu",
+  "Din Djarin",
+  "Cara Dune",
+  "Greef Karga",
+  "Bo-Katan Kryze",
+  "Ahsoka Tano",
+  "Boba Fett",
+  "Luke Skywalker",
+  "Han Solo",
+  "Chewbacca",
+  "Leia Organa",
+  "R2-D2",
+  "C-3PO",
+  "Obi-Wan Kenobi",
+  "Yoda",
+  "Darth Vader",
+  "Darth Maul",
+];
+const L = randomNames.length;
 
-if ( getApps().length === 0 ) {
+if (getApps().length === 0) {
   initializeApp();
 }
 
@@ -33,13 +127,15 @@ const createDummyJournal = async (user) => {
   await logDocRef.set({
     title: `${user.displayName}'s Journal ${Math.random()}`,
     // add random seed to the description between 0 and 100
-    description: `This is a dummy journal created for testing purposes: ${Math.floor(Math.random() * 100)}`,
+    description: `This is a dummy journal created for testing purposes: ${Math.floor(
+      Math.random() * 100
+    )}`,
     access: {
       [user.uid]: {
         role: "admin",
         displayName: user.displayName,
         email: user.email,
-        photoURL: user?.photoURL??'null',
+        photoURL: user?.photoURL ?? "null",
       },
     },
     createdAt: FieldValue.serverTimestamp(),
@@ -47,22 +143,26 @@ const createDummyJournal = async (user) => {
   return logDocRef.id;
 };
 
-const addDummyEntries = async (logId, uid, N=50) => {
-
-
+const addDummyEntries = async (logId, uid, N = 50) => {
   for (let i = 0; i < N; i++) {
     let colEntry = db.collection(`logs/${logId}/entries`).doc();
     await colEntry.set({
-      type: (i % 2 === 0 ? "paid" : "received"),
-      description: `Dummy entry ${i}. Random name: ${randomNames[Math.floor(Math.random() * L)]}`,
+      type: i % 2 === 0 ? "paid" : "received",
+      description: `Dummy entry ${i}. Random name: ${
+        randomNames[Math.floor(Math.random() * L)]
+      }`,
       createdAt: FieldValue.serverTimestamp(),
       // date: today date but at 12:00:00 AM
       // set date to a random date between 2020 and 2022
-      date: new Date(2020 + Math.floor(Math.random() * 4), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28)),
+      date: new Date(
+        2020 + Math.floor(Math.random() * 4),
+        Math.floor(Math.random() * 12),
+        Math.floor(Math.random() * 28)
+      ),
       createdBy: uid,
       is_active: true,
       value: Math.floor(Math.random() * 1000),
-    });     
+    });
   }
 };
 

@@ -7,13 +7,13 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as z from "zod";
-import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {initializeApp, getApps} from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
 
-if ( getApps().length === 0 ) {
+if (getApps().length === 0) {
   initializeApp();
 }
 
@@ -46,8 +46,8 @@ const logFormSchema = z.object({
 // allow cors for all origins
 export const addLogFn = onCall(
   {
-    // allow cors for routes of https://nessedia-3d219.web.app
-    cors: ["https://nessedia.web.app"],
+    // allow cors for routes of https://example.web.app
+    cors: ["https://example.web.app"],
     enforceAppCheck: true,
   },
   async (request) => {
@@ -96,7 +96,7 @@ export const addLogFn = onCall(
       // check if the user is allowed to add a log entry
       const logData = logDoc.data() || {};
       if (
-        !Object.getOwnPropertyDescriptor(logData?.access??{}, uid) ||
+        !Object.getOwnPropertyDescriptor(logData?.access ?? {}, uid) ||
         !ADD_ROLES.has(logData?.access?.[uid]?.role)
       ) {
         throw new HttpsError(
@@ -127,6 +127,6 @@ export const addLogFn = onCall(
     }
 
     // return ok
-    return {result: "ok", message: "Added log entry"};
+    return { result: "ok", message: "Added log entry" };
   }
 );

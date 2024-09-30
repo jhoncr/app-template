@@ -70,6 +70,8 @@ export const useFirebaseAuth = () => {
   const clear = () => {
     setAuthUser(null);
     setLoading(false);
+    // redirect to home /
+    window.location.href = "/";
   };
 
   const signOut = () =>  auth.signOut().then(clear);

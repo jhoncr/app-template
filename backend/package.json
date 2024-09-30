@@ -4,6 +4,7 @@
     "dev": "firebase emulators:start --project=demo-dummy"
   },
   "dependencies": {
-    "firebase-functions": "^4.7.0"
+    "firebase-functions": "^4.7.0",
+    "stripe": "^16.12.0"
   }
 }

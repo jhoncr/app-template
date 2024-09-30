@@ -7,11 +7,11 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as z from "zod";
-import {getFirestore} from "firebase-admin/firestore";
-import {initializeApp, getApps} from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
 
 if (getApps().length === 0) {
   initializeApp();
@@ -19,16 +19,16 @@ if (getApps().length === 0) {
 
 const db = getFirestore();
 
-
-const schema = z.object({
-  journalID: z.string(),
-}).strict();
-
+const schema = z
+  .object({
+    journalID: z.string(),
+  })
+  .strict();
 
 // allow cors for all origins
 export const acceptShare = onCall(
   {
-    cors: ["https://nessedia.web.app"],
+    cors: ["https://example.web.app"],
     enforceAppCheck: true,
   },
   async (request) => {
@@ -74,9 +74,13 @@ export const acceptShare = onCall(
         // logDoc.access map and remove them from the logDoc.pendingAccess map
         const logData = logDoc.data() || {};
         console.log("checking if user is in logDoc.pendingAccess map");
-        if (email && request.auth && (Object.getOwnPropertyDescriptor(logData?.pending_access??{}, email))) {
+        if (
+          email &&
+          request.auth &&
+          Object.getOwnPropertyDescriptor(logData?.pending_access ?? {}, email)
+        ) {
           console.log("adding user to logDoc.access map");
-          const newPendingAccess = {...logData.pending_access};
+          const newPendingAccess = { ...logData.pending_access };
           delete newPendingAccess[email];
 
           transaction.update(logDocRef, {
@@ -90,7 +94,6 @@ export const acceptShare = onCall(
               },
             },
             pending_access: newPendingAccess,
-
           });
         }
       });
@@ -107,6 +110,6 @@ export const acceptShare = onCall(
     }
 
     // return ok
-    return {result: "ok", message: "Added log entry"};
+    return { result: "ok", message: "Added log entry" };
   }
 );

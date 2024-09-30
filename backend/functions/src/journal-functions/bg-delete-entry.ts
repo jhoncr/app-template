@@ -1,7 +1,7 @@
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {initializeApp, getApps} from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { initializeApp, getApps } from "firebase-admin/app";
 import * as z from "zod";
 
 if (getApps().length === 0) {
@@ -19,7 +19,7 @@ const dataSchema = z.object({
 
 export const deleteEntry = onCall(
   {
-    cors: ["https://nessedia.web.app"],
+    cors: ["https://example.web.app"],
     enforceAppCheck: true,
   },
   async (request) => {
@@ -69,7 +69,7 @@ export const deleteEntry = onCall(
         deletedBy: uid,
       });
 
-      return {message: "Entry deleted successfully."};
+      return { message: "Entry deleted successfully." };
     } catch (error) {
       logger.error("deleteEntry: error", error);
       if (error instanceof HttpsError) {
