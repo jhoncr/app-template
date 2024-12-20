@@ -9,6 +9,34 @@ service cloud.firestore {
       		allow read: if request.auth.uid in get(/databases/$(database)/documents/items/$(itemID)).data.access && resource.data.is_active
 
     	}	
-		}
-  }
+    }
+
+    match /stripe-customers/{uid} {
+      // allow read: if request.auth.uid == uid;
+      allow read: if true;
+
+      match /checkout_sessions/{id} {
+        // allow read, write: if request.auth.uid == uid;
+        allow read, write: if true;
+      }
+      match /subscriptions/{id} {
+        allow read: if request.auth.uid == uid;
+      }
+      match /payments/{id} {
+        allow read: if request.auth.uid == uid;
+      }
+    }
+
+    match /stripe-products/{id} {
+      allow read: if true;
+
+      match /prices/{id} {
+        allow read: if true;
+      }
+
+      match /tax_rates/{id} {
+        allow read: if true;
+      }
+    }
+}
 }

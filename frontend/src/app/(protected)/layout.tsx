@@ -1,67 +1,32 @@
 "use client";
 import { useAuth } from "@/lib/auth_handler";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { UserNav } from "@/components/ui/user-nav";
-// import { toolbarContext } from "./nav_tools";
+import { useRouter, usePathname } from "next/navigation";
 
-// function Header({ user, signOut, tools }: { user: any; signOut: any; tools: React.ReactNode }) {
-//   const [atTop, setAtTop] = useState(true);
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       const isAtTop = window.scrollY < 10;
-//       if (isAtTop !== atTop) {
-//         setAtTop(isAtTop);
-//       }
-//     };
-//     document.addEventListener("scroll", handleScroll);
-//     return () => {
-//       document.removeEventListener("scroll", handleScroll);
-//     };
-//   }, [atTop]);
-
-//   // header is fixed at the top of the page with a shadow and border at the bottom
-  
-//   return (
-//     <header className="flex flex-row items-center justify-between w-full px-3 py-1 border-b-2 h-content">
-//       <Link href="/" className="text-xl font-semibold mr-4">
-//         <div className="flex items-center">
-//           <img src="/logo.svg" alt="logo" className="w-6 h-6" />
-//         </div>
-//       </Link>
-
-//       <div className="px-1 w-full">
-//         {tools}
-//       </div>
-      
-//       <UserNav user={user} signOut={signOut} />
-//     </header>
-//   );
-// }
-
-export default function NeedLoginLayout({ children, login }: 
-  { children: React.ReactNode; login: React.ReactNode }) {
+export default function NeedLoginLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { authUser, loading, signOut } = useAuth();
-  const [ toolbar, setToolBar ] = useState(null as React.ReactNode);
+  // const [toolbar, setToolBar] = useState(null as React.ReactNode);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     console.log("Loading Layout. User:", authUser);
   }, [authUser]);
 
+  // redirect with login page
+  // if (!authUser && !loading) {
+  //   router.push("/login");
+  // }
+
   return (
     <>
-      { authUser && (
-        <>
-          {/* <toolbarContext.Provider value={{ setToolBar }}>
-            <Header user={authUser} signOut={signOut} tools={toolbar} /> */}
-            {/* <JournalProvider userID={authUser.uid}>{children}</JournalProvider> */}
-            {children}
-          {/* </toolbarContext.Provider> */}
-        </>
-      ) 
-      || loading && <div>Loading...</div> 
-      || login 
-        }
+      {(loading && <div>Loading App...</div>) ||
+        (authUser && <> {children} </>) ||
+        router.push("/login?next=" + pathname)}
     </>
   );
 }

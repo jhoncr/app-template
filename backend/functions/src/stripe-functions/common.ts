@@ -20,6 +20,8 @@ if (getApps().length === 0) {
 
 const db = getFirestore();
 
+export const apiVersion = "2024-10-28";
+
 export const stripe = new Stripe(config.stripeSecretKey, {
   // apiVersion: apiVersion,
   // Register extension as a Stripe plugin
@@ -51,13 +53,17 @@ export const createCustomerRecord = async ({
     const customer = await stripe.customers.create(customerData);
 
     // Add a mapping record in Cloud Firestore.
-    const customerRecord = {
-      email: customer.email,
+    const customerRecord: CustomerData = {
+      email: customer.email ?? email,
       stripeId: customer.id,
       stripeLink: `https://dashboard.stripe.com${
         customer.livemode ? "" : "/test"
       }/customers/${customer.id}`,
+      metadata: {
+        firebaseUID: uid,
+      },
     };
+
     if (phone) (customerRecord as any).phone = phone;
     await db
       .collection(config.customersCollectionPath)
@@ -277,16 +283,18 @@ export const createProductRecord = async (
   product: Stripe.Product
 ): Promise<void> => {
   const { firebaseRole, ...rawMetadata } = product.metadata;
-
+  console.info("product", product);
+  logs.info(product);
   const productData: Product = {
-    active: product.active,
-    name: product.name,
-    description: product.description,
+    // active: product.active,
+    // name: product.name,
+    // description: product.description,
     role: firebaseRole ?? null,
-    images: product.images,
-    metadata: product.metadata,
-    tax_code: product.tax_code ?? null,
+    // images: product.images,
+    // metadata: product.metadata,
+    // tax_code: product.tax_code ?? null,
     ...prefixMetadata(rawMetadata),
+    ...product,
   };
   await db
     .collection(config.productsCollectionPath)

@@ -22,8 +22,8 @@ if (getApps().length === 0) {
 }
 
 const db = getFirestore();
-logs.info("webhood_secret", config.stripeWebhookSecret);
-logs.info("webhood_secret 2", process.env.STRIPE_WEBHOOK_SECRET);
+logs.info("webhook_secret", config.stripeWebhookSecret);
+logs.info("webhook_secret 2", process.env.STRIPE_WEBHOOK_SECRET);
 
 /**
  * A webhook handler function for the relevant Stripe events.

@@ -2,3 +2,10 @@ notes.sh
 
 # ignore all .env.mjs files
 *.env.mjs
+*.env.development
+*.env.production
+*.env 
+
+
+ignore all /lib/ directories
+**/lib/

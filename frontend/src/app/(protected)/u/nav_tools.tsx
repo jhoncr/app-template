@@ -5,10 +5,9 @@ import { useState, useContext, createContext } from "react";
 
 // create a context for toolbar
 export const toolbarContext = createContext({
-    // toolbar: null as React.ReactNode,
-    setNavTools: (el:React.ReactNode) => { },
+  toolbar: null as React.ReactNode,
+  setNavTools: (el: React.ReactNode) => {},
 });
 
 // create and export a hook to use the toolbarContext
 export const useToolbar = () => useContext(toolbarContext);
-

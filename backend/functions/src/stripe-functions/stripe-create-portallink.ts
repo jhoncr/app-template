@@ -21,12 +21,14 @@ const db = getFirestore();
 export const createPortalLink = onCall(
   {
     // allow cors for routes of https://example.web.app
-    // cors: ["https://example.web.app"],
+    cors: ["http://127.0.0.1:3000"],
     enforceAppCheck: true,
   },
   //   async (data, context) => {
   async (request) => {
     // Checking that the user is authenticated.
+    logs.info("createPortalLink", request.data);
+
     const uid = request.auth?.uid;
     if (!uid) {
       // Throwing an HttpsError so that the client gets the error details.
@@ -63,6 +65,7 @@ export const createPortalLink = onCall(
         throw new Error("No customer record found");
       }
 
+      console.log("customerRecord", customerRecord);
       const customer = customerRecord.stripeId;
 
       const params: Stripe.BillingPortal.SessionCreateParams = {

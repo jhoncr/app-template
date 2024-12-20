@@ -7,10 +7,24 @@ import { deleteEntry } from "./journal-functions/bg-delete-entry";
 
 import { createPortalLink } from "./stripe-functions/stripe-create-portallink";
 import { handleWebhookEvents } from "./stripe-functions/stripe-webhook-handler";
+import {
+  createCheckoutSessionFn,
+  createPaymentIntent,
+} from "./stripe-functions/create-checkout-session-oncall";
+import { createCheckoutSessionV2 } from "./stripe-functions/stripe-create-checkoutsessionV2";
+// import { createCheckoutSessionV1 } from "./stripe-functions/onCreate-checkoutsession";
+import {
+  onTestDocumentCreated,
+  handleTest,
+} from "./stripe-functions/stripe-test";
 
 if (getApps().length === 0) {
   initializeApp();
 }
+
+exports.createCheckoutSessionFn = createCheckoutSessionFn;
+exports.createPaymentIntent = createPaymentIntent;
+exports.createCheckoutSession = createCheckoutSessionV2;
 
 exports.addLogFn = addLogFn;
 exports.createNewJournal = createNewJournal;
@@ -20,3 +34,10 @@ exports.deleteEntry = deleteEntry;
 
 exports.createPortalLink = createPortalLink;
 exports.handleWebhookEvents = handleWebhookEvents;
+
+// only export handleTest in development mode
+if (process.env.FUNCTIONS_EMULATOR) {
+  console.log("Running in emulator mode, exporting handleTest");
+  exports.handleTest = handleTest;
+  exports.onTestDocumentCreated = onTestDocumentCreated;
+}

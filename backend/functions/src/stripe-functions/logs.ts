@@ -16,7 +16,7 @@
 
 import { logger } from "firebase-functions";
 
-export const info = logger.info;
+export const info = logger.log;
 
 export const creatingCustomer = (uid: string) => {
   logger.log(`⚙️ Creating customer object for [${uid}].`);

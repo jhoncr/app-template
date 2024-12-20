@@ -1,25 +1,28 @@
-
 // import firebase from 'firebase/app';
-'use client'
+"use client";
 import { initializeApp } from "firebase/app";
-import { getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  connectAuthEmulator, 
-  User
-} from "firebase/auth"
-import React, { useState, useEffect, createContext, useContext } from 'react'
-import { CustomProvider, initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  connectAuthEmulator,
+  User,
+} from "firebase/auth";
+import React, { useState, useEffect, createContext, useContext } from "react";
+import {
+  CustomProvider,
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from "firebase/app-check";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 // import the config.json file
-import config from './config.json'
+import config from "./config.json";
 
 const firebaseConfig = config.firebaseConfig;
 
 export const app = initializeApp(firebaseConfig);
 
-export const functions = getFunctions(app);
-
+// export const functions = getFunctions(app);
 
 if (process.env.NODE_ENV === "development") {
   console.log(
@@ -29,11 +32,9 @@ if (process.env.NODE_ENV === "development") {
   connectAuthEmulator(getAuth(), "http://localhost:9099", {
     disableWarnings: true,
   });
-  
-  connectFunctionsEmulator(functions, "localhost", 5001);
+
+  connectFunctionsEmulator(getFunctions(app), "localhost", 5001);
 }
-
-
 
 if (typeof window !== "undefined") {
   window.onload = () => {
@@ -61,7 +62,6 @@ if (typeof window !== "undefined") {
   };
 }
 
-
 export const useFirebaseAuth = () => {
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ export const useFirebaseAuth = () => {
     window.location.href = "/";
   };
 
-  const signOut = () =>  auth.signOut().then(clear);
+  const signOut = () => auth.signOut().then(clear);
 
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -96,26 +96,28 @@ export const useFirebaseAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  return { 
-    authUser, 
-    loading, 
+  return {
+    authUser,
+    loading,
     signOut,
-    signInWithGoogle 
-    };
-}
+    signInWithGoogle,
+  };
+};
 
 const authUserContext = createContext({
   authUser: null as User | null,
   loading: false,
-  signOut: () => { },
-  signInWithGoogle: () => { }
+  signOut: () => {},
+  signInWithGoogle: () => {},
 });
 
 // create and export a provider
-export function AuthUserProvider({ children }:{children: React.ReactNode}) {
+export function AuthUserProvider({ children }: { children: React.ReactNode }) {
   const auth = useFirebaseAuth();
-  
-  return <authUserContext.Provider value={ auth }>{children}</authUserContext.Provider>;
+
+  return (
+    <authUserContext.Provider value={auth}>{children}</authUserContext.Provider>
+  );
 }
 
 // create and export a hook to use the authUserContext

@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 
 import { stripe } from "./common";
 import * as logs from "./logs";
@@ -49,6 +49,7 @@ const deleteStripeCustomer = async ({
 /*
  * The `onUserDeleted` deletes their customer object in Stripe which immediately cancels all their subscriptions.
  */
+// export const onUserDeleted = functions.auth.user().onDelete(async (user) => {
 export const onUserDeleted = functions.auth.user().onDelete(async (user) => {
   if (!config.autoDeleteUsers) return;
   // Get the Stripe customer id.
