@@ -4,7 +4,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthUserProvider } from "@/lib/auth_handler";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
@@ -27,7 +27,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <AuthUserProvider>{children}</AuthUserProvider>
+            <AuthUserProvider>
+              <main>{children}</main>
+              <Toaster />
+            </AuthUserProvider>
           </ThemeProvider>
         </TooltipProvider>
       </body>

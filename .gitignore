@@ -8,4 +8,5 @@ notes.sh
 
 
 ignore all /lib/ directories
-**/lib/
+
+**/lib/config.json

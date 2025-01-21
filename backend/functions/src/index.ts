@@ -18,6 +18,21 @@ import {
   handleTest,
 } from "./stripe-functions/stripe-test";
 
+//hande material ops:
+import {
+  createMaterial,
+  getMaterials,
+  updateMaterial,
+  deleteMaterial,
+} from "./quotes-fn/material-ops";
+
+import {
+  createQuote,
+  getQuotes,
+  updateQuote,
+  deleteQuote,
+} from "./quotes-fn/quote-ops";
+
 if (getApps().length === 0) {
   initializeApp();
 }
@@ -41,3 +56,13 @@ if (process.env.FUNCTIONS_EMULATOR) {
   exports.handleTest = handleTest;
   exports.onTestDocumentCreated = onTestDocumentCreated;
 }
+
+exports.createMaterial = createMaterial;
+exports.getMaterials = getMaterials;
+exports.updateMaterial = updateMaterial;
+exports.deleteMaterial = deleteMaterial;
+
+exports.createQuote = createQuote;
+exports.getQuotes = getQuotes;
+exports.updateQuote = updateQuote;
+exports.deleteQuote = deleteQuote;

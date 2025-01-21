@@ -15,8 +15,11 @@ import {
   ReCaptchaEnterpriseProvider,
 } from "firebase/app-check";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-// import the config.json file
-import config from "./config.json";
+
+import devConfig from "./config.dev.json";
+import prodConfig from "./config.json";
+
+const config = process.env.NODE_ENV === "development" ? devConfig : prodConfig;
 
 const firebaseConfig = config.firebaseConfig;
 
@@ -116,7 +119,9 @@ export function AuthUserProvider({ children }: { children: React.ReactNode }) {
   const auth = useFirebaseAuth();
 
   return (
-    <authUserContext.Provider value={auth}>{children}</authUserContext.Provider>
+    <authUserContext.Provider value={auth}>
+      {children}
+    </authUserContext.Provider>
   );
 }
 
