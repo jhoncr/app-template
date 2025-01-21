@@ -10,3 +10,4 @@ notes.sh
 ignore all /lib/ directories
 
 **/lib/config.json
+**secret.local
