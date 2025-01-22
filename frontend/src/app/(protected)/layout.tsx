@@ -23,10 +23,10 @@ export default function NeedLoginLayout({
   // }
 
   return (
-    <>
+    <div>
       {(loading && <div>Loading App...</div>) ||
         (authUser && <> {children} </>) ||
         router.push("/login?next=" + pathname)}
-    </>
+    </div>
   );
 }

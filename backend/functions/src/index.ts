@@ -31,6 +31,7 @@ import {
   getQuotes,
   updateQuote,
   deleteQuote,
+  getQuote,
 } from "./quotes-fn/quote-ops";
 
 if (getApps().length === 0) {
@@ -66,3 +67,4 @@ exports.createQuote = createQuote;
 exports.getQuotes = getQuotes;
 exports.updateQuote = updateQuote;
 exports.deleteQuote = deleteQuote;
+exports.getQuote = getQuote;

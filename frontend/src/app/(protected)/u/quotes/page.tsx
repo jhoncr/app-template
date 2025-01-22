@@ -1,3 +1,4 @@
+// frontend/src/app/(protected)/u/quotes/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import {
   TableCaption,
 } from "@/components/ui/table";
 import { Quote } from "@/lib/custom_types";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, Edit } from "lucide-react";
 import {
   Dialog,
   DialogTrigger,
@@ -23,6 +24,7 @@ import {
 import { QuoteForm } from "@/components/ui/quote-form";
 import { useToolbar } from "@/app/(protected)/u/nav_tools";
 import { httpsCallable, getFunctions } from "firebase/functions";
+import Link from "next/link"; // ADD THIS LINE
 
 const QuotesPage = () => {
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -32,36 +34,14 @@ const QuotesPage = () => {
   useEffect(() => {
     setTools(
       <div className="flex justify-end items-center space-x-2">
-        <Dialog
-          // open={!!editQuote}
-          onOpenChange={(open) => {
-            console.log("onOpenChange", open);
-            if (!open) setEditQuote(null);
-          }}
-        >
-          <DialogTrigger asChild>
-            <Button variant={"outline"} size={"sm"}>
-              <Plus className="w-4 h-4 mr-2" /> Add Quote
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {editQuote ? "Edit Quote" : "Add Quote"}
-              </DialogTitle>
-              <DialogDescription>
-                {" "}
-                {editQuote
-                  ? "Edit an existing quote"
-                  : "Create a new quote for a client"}{" "}
-              </DialogDescription>
-            </DialogHeader>
-            <QuoteForm
-              defaultValues={editQuote || undefined}
-              onSave={editQuote ? handleUpdateQuote : handleCreateQuote}
-            />
-          </DialogContent>
-        </Dialog>
+        {/* DIALOG TRIGGER AND BUTTON REMOVED FROM HERE */}
+        <Link href="/u/quotes/create">
+          {" "}
+          {/* ADD LINK HERE */}
+          <Button variant={"outline"} size={"sm"}>
+            <Plus className="w-4 h-4 mr-2" /> Add Quote
+          </Button>
+        </Link>
       </div>
     );
 

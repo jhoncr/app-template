@@ -64,6 +64,7 @@ export const MaterialForm = ({ onSave, defaultValues }: MaterialFormProps) => {
         toast({
           title: "Material Created",
           description: "Material was created successfully.",
+          actionText: "View",
         });
         if (onSave) {
           onSave({ ...values, id: response.data.materialId });

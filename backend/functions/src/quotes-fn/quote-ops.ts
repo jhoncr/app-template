@@ -17,6 +17,7 @@ if (getApps().length === 0) {
 
 const db = getFirestore();
 const QUOTES_COLLECTION = "quotes";
+const QUOTE_HISTORY_COLLECTION = `history/${QUOTES_COLLECTION}/v0`;
 
 // Define the schema for quote data
 const quoteSchema = z.object({
@@ -33,6 +34,19 @@ const quoteSchema = z.object({
   status: z
     .enum(["pending", "sent", "accepted", "deactivated"])
     .default("pending"),
+  items: z
+    .array(
+      z.object({
+        materialId: z.string(),
+        quantity: z
+          .number()
+          .min(0.01, { message: "Item quantity must be greater than 0" }),
+        notes: z.string().optional(), // Added notes
+        picture: z.string().url().optional(), // Added picture URL, validated as URL
+      })
+    )
+    .optional()
+    .default([]), // Items is now part of the schema and defaulted to empty array
 });
 
 // Function to create a new quote
@@ -61,7 +75,7 @@ export const createQuote = onCall(
       const quoteRef = db.collection(QUOTES_COLLECTION).doc();
       await quoteRef.set({
         ...result.data,
-        items: [],
+        // items: [],
         version: 1,
         createdAt: FieldValue.serverTimestamp(),
         createdBy: uid,
@@ -151,17 +165,18 @@ export const updateQuote = onCall(
           throw new HttpsError("not-found", "Quote data is undefined");
         }
 
-        const newQuoteRef = db.collection(QUOTES_COLLECTION).doc();
-        transaction.set(newQuoteRef, {
-          ...quoteData,
+        transaction.update(quoteRef, {
           ...result.data,
           version: quoteData.version + 1,
           updatedAt: FieldValue.serverTimestamp(),
           updatedBy: uid,
         });
-        // update the old document with "deactivated" status
-        transaction.update(quoteRef, {
+
+        const newQuoteRef = db.collection(QUOTE_HISTORY_COLLECTION).doc();
+        transaction.set(newQuoteRef, {
+          ...quoteData,
           status: "deactivated",
+          historyId: quoteId,
           updatedAt: FieldValue.serverTimestamp(),
           updatedBy: uid,
         });
@@ -207,6 +222,55 @@ export const deleteQuote = onCall(
       throw new HttpsError(
         "internal",
         "Error deleting quote. Please try again later"
+      );
+    }
+  }
+);
+
+// Function to get a single quote by ID.
+export const getQuote = onCall(
+  { cors: ["http://localhost:3000"], enforceAppCheck: true },
+  async (request) => {
+    try {
+      logger.info("getQuote called");
+      if (!request.auth) {
+        throw new HttpsError(
+          "unauthenticated",
+          "You must be signed in to get a quote."
+        );
+      }
+
+      const quoteId = request.data.id;
+      if (!quoteId) {
+        throw new HttpsError(
+          "invalid-argument",
+          "The function must be called with a quote ID."
+        );
+      }
+
+      const quoteDoc = await db
+        .collection(QUOTES_COLLECTION)
+        .doc(quoteId)
+        .get();
+
+      if (!quoteDoc.exists) {
+        throw new HttpsError("not-found", "Quote not found");
+      }
+
+      const quoteData = quoteDoc.data();
+      if (!quoteData) {
+        throw new HttpsError("not-found", "Quote data is undefined");
+      }
+
+      return { result: "ok", quote: { ...quoteData, id: quoteDoc.id } }; // Include document ID in response
+    } catch (error) {
+      logger.error("Error getting quote", error);
+      if (error instanceof HttpsError) {
+        throw error; // Re-throw HTTP errors for client to handle
+      }
+      throw new HttpsError(
+        "internal",
+        "Error getting quote. Please try again later."
       );
     }
   }
